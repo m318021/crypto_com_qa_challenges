@@ -1,11 +1,17 @@
-# resources/services/ws_client.py
-import asyncio, json, time, logging, ssl, websockets
+import asyncio
+import json
+import time
+import logging
+import ssl
+import websockets
+
 try:
     import certifi
 except Exception:
     certifi = None
 
 logger = logging.getLogger(__name__)
+
 
 def make_ssl_context(insecure: bool = False, cafile: str | None = None) -> ssl.SSLContext | None:
     if insecure:
@@ -17,8 +23,9 @@ def make_ssl_context(insecure: bool = False, cafile: str | None = None) -> ssl.S
         return ssl.create_default_context(cafile=cafile)
     if certifi:
         return ssl.create_default_context(cafile=certifi.where())
-    # return None  # ← 允許回 None，但 __aenter__ 會把它轉成 True
+    # return None  # ← Allow returning None, but __aenter__ will convert it to True
     return None
+
 
 class WSClient:
     def __init__(self, url: str, connect_sleep_secs: float = 1.0, ssl_context: ssl.SSLContext | None = None):
@@ -35,7 +42,7 @@ class WSClient:
         return int(time.time() * 1000)
 
     async def __aenter__(self):
-        # 🔐 關鍵：如果是 wss:// 且 ssl_context 是 None，就用 True（讓 websockets 自建）
+        # 🔐 Key point: if using wss:// and ssl_context is None, set it to True (let websockets auto-create one)
         ssl_param = self.ssl_context if self.ssl_context is not None else True
         self.ws = await websockets.connect(self.url, ping_interval=None, ssl=ssl_param)
         await asyncio.sleep(self.connect_sleep_secs)
@@ -66,14 +73,17 @@ class WSClient:
         await self.ws.send(json.dumps({"id": hb_id, "method": "public/respond-heartbeat"}))
 
     async def subscribe(self, channels, extra_params: dict | None = None, req_id: int | None = None):
-        if req_id is None: req_id = self._now_ms()
+        if req_id is None:
+            req_id = self._now_ms()
         params = {"channels": channels}
-        if extra_params: params.update(extra_params)
+        if extra_params:
+            params.update(extra_params)
         await self.ws.send(json.dumps({"id": req_id, "method": "subscribe", "params": params, "nonce": self._now_ms()}))
         return req_id
 
     async def unsubscribe(self, channels, req_id: int | None = None):
-        if req_id is None: req_id = self._now_ms()
+        if req_id is None:
+            req_id = self._now_ms()
         await self.ws.send(json.dumps({"id": req_id, "method": "unsubscribe", "params": {"channels": channels}, "nonce": self._now_ms()}))
         return req_id
 

@@ -29,8 +29,8 @@ class APIClient:
         status_forcelist: Tuple[int, ...] = (429, 500, 502, 503, 504),
         timeout: Union[float, Tuple[float, float]] = (5, 30),  # (connect, read)
         # --- TLS options (new) ---
-        insecure: bool = False,              # if True -> do not verify TLS (debug only)
-        cafile: Optional[str] = None,        # custom CA bundle path (PEM)
+        insecure: bool = False,  # if True -> do not verify TLS (debug only)
+        cafile: Optional[str] = None,  # custom CA bundle path (PEM)
         # --------------------------
         default_headers: Optional[Mapping[str, str]] = None,
         auth: Optional[requests.auth.AuthBase] = None,
@@ -152,10 +152,7 @@ class APIClient:
 
         if check_status and resp.status_code != expected:
             # Attach response text for easier debugging
-            msg = (
-                f"Unexpected status {resp.status_code} (expected {expected}) "
-                f"for {method.upper()} {resp.request.path_url}: {resp.text[:1000]}"
-            )
+            msg = f"Unexpected status {resp.status_code} (expected {expected}) " f"for {method.upper()} {resp.request.path_url}: {resp.text[:1000]}"
             err = APIError(msg, response=resp)
             logger.warning(msg)
             raise err

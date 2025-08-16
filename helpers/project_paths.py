@@ -17,10 +17,6 @@ TEST_DATA_REST_CANDLESTICK_PATH = JSON_DIR / "test_data_rest_candlestick.json"
 INI_DIR = CONFIG_FILES_DIR / "ini"
 RUN_INI_PATH = INI_DIR / "run.ini"
 
-# ----- Generated Files -----
-GENERATED_FILES_DIR = PROJECT_ROOT / "generated_files"
-
-
 # ----- Reports directory -----
 REPORTS = PROJECT_ROOT / "reports"
 ALLURE_RESULTS_PATH = REPORTS / "allure_results"

@@ -1,8 +1,8 @@
 import time
 import pytest
 from resources.services.api_client import APIError
-from resources.functions.candlestick_utils import TD
-from resources.functions.candlestick_utils import (
+from resources.utils.candlestick_utils import TD
+from resources.utils.candlestick_utils import (
     norm_tf,
     interval_ms,
     assert_ohlc_ok,

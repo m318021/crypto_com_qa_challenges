@@ -1,7 +1,7 @@
 import logging
 import pytest
 
-from resources.functions.ws_helpers import (
+from resources.utils.ws_book_utils import (
     is_level_tuple,
     wait_first_data,
     wait_subscribe_ack,
