@@ -72,26 +72,23 @@ crypto_com_qa_challenges/
 
 ## Installation
 
-### Clone repository
-```
-git clone https://github.com/yourname/crypto_com_qa_challenges.git
-cd crypto_com_qa_challenges
-```
-
 ### Environment Setup (Python 3.10 + venv)
 ```
-# Create & activate a virtualenv
+# 1. Clone repository
+git clone https://github.com/m318021/crypto_com_qa_challenges.git
+cd crypto_com_qa_challenges
+
+# 2. Setup venv
 python3 -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-```
+source venv/bin/activate
 
-### Make the project importable via project.pth
-To allow importing modules from the project root without editing PYTHONPATH, create a .pth file inside your venv’s site-packages that points to the repo root.
-
-### Install dependencies
-```
+# 3. Install dependencies
 pip install -r requirements.txt
+
+# 4. (Optional) Add project path
+echo $(pwd) > venv/lib/python3.10/site-packages/project.pth
 ```
+
 ### Updating library versions in `requirements.txt`
 ```
 pip install pip-review
