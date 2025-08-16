@@ -140,22 +140,19 @@ pytest tests/test_rest_candlestick.py -v --instrument=ETHUSD-PERP
 ```
 pytest tests/test_ws_book.py -v
 ```
-
-### Subscribe to BTCUSD-PERP book.50 (default)
+- Subscribe to BTCUSD-PERP book.50 (default)
 ```
 pytest tests/test_ws_book.py -v
 ```
-
-### UAT environment, ETHUSD-PERP, depth=10
+- UAT environment, ETHUSD-PERP, depth=10
 ```
 pytest tests/test_ws_book.py -v --env=uat --instrument=ETHUSD-PERP --depth=10
 ```
-
-### Force SNAPSHOT only
+- Force SNAPSHOT only
 ```
 pytest tests/test_ws_book.py -v --book-type=SNAPSHOT
 ```
-### Set book update frequency to 100ms
+- Set book update frequency to 100ms
 ```
 pytest tests/test_ws_book.py -v --book-freq=100
 ```
@@ -163,13 +160,12 @@ pytest tests/test_ws_book.py -v --book-freq=100
 ---
 ## Override Server Endpoints
 
-### REST
+- REST
 ```
 pytest tests/test_rest_candlestick.py -v \
   --server=https://uat-api.3ona.co/exchange/v1/
 ```
-
-### WebSocket
+- WebSocket
 ```
 pytest tests/test_ws_book.py -v \
   --server=wss://uat-stream.3ona.co/exchange/v1/market
