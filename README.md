@@ -30,6 +30,7 @@ candlestick data (`public/get-candlestick`) and order book subscriptions (`book`
 ---
 
 ## Project Structure
+```
 crypto_com_qa_challenges/
 ├── config_files/                           # Project configuration files
 │   ├── ini/                                # Default ini files
@@ -63,15 +64,17 @@ crypto_com_qa_challenges/
 │
 ├── README.md                               # Project introduction
 └── pytest.ini                              # Pytest configuration (markers, options, logging)
-
+```
 ---
 
 ## Installation
 
-```bash
+
 # Clone repository
+```
 git clone https://github.com/yourname/crypto_com_qa_challenges.git
 cd crypto_com_qa_challenges
+```
 
 # Install dependencies
 pip install -r requirements.txt
