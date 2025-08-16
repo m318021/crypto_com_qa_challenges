@@ -136,26 +136,18 @@ pytest tests/test_rest_candlestick.py -v --instrument=ETHUSD-PERP
 ```
 
 ### Run WebSocket Tests
-```
 pytest tests/test_ws_book.py -v
-```
 
 Examples:
 # Subscribe to BTCUSD-PERP book.50 (default)
-```
 pytest tests/test_ws_book.py -v
-```
 
 # UAT environment, ETHUSD-PERP, depth=10
-```
 pytest tests/test_ws_book.py -v --env=uat --instrument=ETHUSD-PERP --depth=10
-```
 
 # Force SNAPSHOT only
-```
 pytest tests/test_ws_book.py -v --book-type=SNAPSHOT
-```
+
 # Set book update frequency to 100ms
-```
 pytest tests/test_ws_book.py -v --book-freq=100
 ```
