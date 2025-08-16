@@ -77,13 +77,15 @@ cd crypto_com_qa_challenges
 ```
 
 # Install dependencies
+```
 pip install -r requirements.txt
-
+```
 ### Updating library versions in `requirements.txt`
+```
 pip install pip-review
 pip-review --auto
 pip freeze > requirements.txt
-
+```
 ## Execution
 
 This project uses **pytest** for test execution.  
@@ -107,38 +109,53 @@ and pass parameters through **CLI options** or **run.ini**.
 
 ---
 
-
-
-```bash
 ### Run All Tests
+```
 pytest -v
+```
 
 ### Run REST Tests
+```
 pytest tests/test_rest_candlestick.py -v
+```
 
 Examples:
 # Use prod (default)
+```
 pytest tests/test_rest_candlestick.py -v
+```
 
 # Use UAT environment
+```
 pytest tests/test_rest_candlestick.py -v --env=uat
+```
 
 # Change instrument
+```
 pytest tests/test_rest_candlestick.py -v --instrument=ETHUSD-PERP
+```
 
 ### Run WebSocket Tests
+```
 pytest tests/test_ws_book.py -v
+```
 
 Examples:
 # Subscribe to BTCUSD-PERP book.50 (default)
+```
 pytest tests/test_ws_book.py -v
+```
 
 # UAT environment, ETHUSD-PERP, depth=10
+```
 pytest tests/test_ws_book.py -v --env=uat --instrument=ETHUSD-PERP --depth=10
+```
 
 # Force SNAPSHOT only
+```
 pytest tests/test_ws_book.py -v --book-type=SNAPSHOT
-
+```
 # Set book update frequency to 100ms
+```
 pytest tests/test_ws_book.py -v --book-freq=100
 ```
