@@ -113,29 +113,23 @@ and pass parameters through **CLI options** or **run.ini**.
 pytest -v
 ```
 ---
-
 ## Run REST Tests
 ```
 pytest tests/test_rest_candlestick.py -v
 ```
-
-### Use prod (default)
+- Use prod (default)
 ```
 pytest tests/test_rest_candlestick.py -v
 ```
-
-### Use UAT environment
+- Use UAT environment
 ```
 pytest tests/test_rest_candlestick.py -v --env=uat
 ```
-
-### Change instrument
+- Change instrument
 ```
 pytest tests/test_rest_candlestick.py -v --instrument=ETHUSD-PERP
 ```
-
 ---
-
 ## Run WebSocket Tests
 ```
 pytest tests/test_ws_book.py -v
@@ -156,7 +150,6 @@ pytest tests/test_ws_book.py -v --book-type=SNAPSHOT
 ```
 pytest tests/test_ws_book.py -v --book-freq=100
 ```
-
 ---
 ## Override Server Endpoints
 
