@@ -38,7 +38,7 @@ def get_json(path: str, encoding: str = "utf-8") -> Union[dict, list]:
 
 # ----- Centralized Configuration Management (Lazy Loading) -----
 CONFIGS = {
-    "RUN_INI": lambda: get_config(RUN_INI_PATH),
+    "RUN_INI": get_config(RUN_INI_PATH),
 }
 
 JSON_DATA = {

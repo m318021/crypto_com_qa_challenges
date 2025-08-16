@@ -8,13 +8,13 @@ from urllib.parse import urljoin
 from urllib3.util.retry import Retry
 from urllib3.exceptions import InsecureRequestWarning
 import urllib3
+import certifi  # ← default CA bundle
 
 logger = logging.getLogger(__name__)
 
 
 class APIError(requests.HTTPError):
     """Raised for unexpected HTTP responses from the API."""
-
     pass
 
 
@@ -28,7 +28,10 @@ class APIClient:
         backoff_factor: float = 0.5,
         status_forcelist: Tuple[int, ...] = (429, 500, 502, 503, 504),
         timeout: Union[float, Tuple[float, float]] = (5, 30),  # (connect, read)
-        verify_ssl: bool = True,
+        # --- TLS options (new) ---
+        insecure: bool = False,              # if True -> do not verify TLS (debug only)
+        cafile: Optional[str] = None,        # custom CA bundle path (PEM)
+        # --------------------------
         default_headers: Optional[Mapping[str, str]] = None,
         auth: Optional[requests.auth.AuthBase] = None,
         user_agent: str = "APIClient/1.0 (+requests)",
@@ -37,7 +40,15 @@ class APIClient:
         self.server = server if server.endswith("/") else server + "/"
         self.default_status = default_status
         self.timeout = timeout
-        self.verify_ssl = verify_ssl
+
+        # Resolve verification behaviour for requests: bool | str (path)
+        if insecure:
+            self._verify: Union[bool, str] = False
+        elif cafile:
+            self._verify = cafile
+        else:
+            # use certifi bundle by default to avoid system CA inconsistencies
+            self._verify = certifi.where()
 
         retry = Retry(
             total=retry_total,
@@ -53,13 +64,20 @@ class APIClient:
         self.session.mount("https://", adapter)
         self.session.mount("http://", adapter)
 
+        # Base headers
         self.session.headers.update({"User-Agent": user_agent})
+        # Default to JSON content-type unless caller overrides per-request
         if default_headers:
             self.session.headers.update(default_headers)
+        else:
+            self.session.headers.update({"Content-Type": "application/json"})
+
         if proxies:
             self.session.proxies.update(proxies)
         if auth:
             self.session.auth = auth
+
+    # ------------- HTTP verb helpers -------------
 
     def get(self, path: str, **kwargs):
         return self.request("GET", path, **kwargs)
@@ -75,6 +93,8 @@ class APIClient:
 
     def delete(self, path: str, **kwargs):
         return self.request("DELETE", path, **kwargs)
+
+    # ------------- Core request ------------------
 
     def request(
         self,
@@ -93,12 +113,12 @@ class APIClient:
         timeout: Optional[Union[float, Tuple[float, float]]] = None,
         stream: bool = False,
     ):
-
         url = urljoin(self.server, path.lstrip("/"))
         expected = expected_status if expected_status is not None else self.default_status
         timeout = timeout if timeout is not None else self.timeout
 
-        if not self.verify_ssl:
+        # Silence only when verification is explicitly disabled
+        if self._verify is False:
             urllib3.disable_warnings(InsecureRequestWarning)
 
         start = perf_counter()
@@ -113,7 +133,7 @@ class APIClient:
                 data=None if json is not None else data,  # prefer JSON payloads
                 files=files,
                 timeout=timeout,
-                verify=self.verify_ssl,
+                verify=self._verify,  # bool or path string
                 stream=stream,
             )
         except requests.RequestException as e:
@@ -132,15 +152,19 @@ class APIClient:
 
         if check_status and resp.status_code != expected:
             # Attach response text for easier debugging
-            msg = f"Unexpected status {resp.status_code} (expected {expected}) " f"for {method.upper()} {resp.request.path_url}: {resp.text[:1000]}"
+            msg = (
+                f"Unexpected status {resp.status_code} (expected {expected}) "
+                f"for {method.upper()} {resp.request.path_url}: {resp.text[:1000]}"
+            )
             err = APIError(msg, response=resp)
             logger.warning(msg)
             raise err
 
         if return_json:
-            # Will raise ValueError if body is not JSON
-            return resp.json()
+            return resp.json()  # may raise ValueError if not JSON
         return resp
+
+    # ------------- Context mgmt ------------------
 
     def close(self) -> None:
         self.session.close()

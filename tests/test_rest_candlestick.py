@@ -165,3 +165,27 @@ def test_invalid_instrument(rest_api):
         # code=0 但 data 可能為空（也接受）
         result = extract_result(body)
         assert result.get("data", []) == []
+
+# tests/test_rest_candlestick.py (新增在負向案例區)
+
+@pytest.mark.negative
+def test_invalid_instrument_direct(rest_api, instrument_name="ETHUSD-PERP111"):
+    """
+    Directly test an invalid instrument (ETHUSD-PERP111).
+    Expect either APIError(400) or code != 0 in response.
+    """
+    bad_instrument = "ETHUSD-PERP111"
+    try:
+        resp = rest_api.get_candlestick({
+            "instrument_name": bad_instrument,
+            "timeframe": "M5",
+            "count": 25,
+        })
+    except APIError as e:
+        # Expected: server returns HTTP 400
+        assert "400" in str(e) or "Invalid" in str(e)
+        return
+
+    # If API did not raise, check response body
+    body = resp.json()
+    assert body.get("code", 1) != 0, f"unexpected success: {body}"
