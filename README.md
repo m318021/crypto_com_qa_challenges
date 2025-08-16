@@ -175,10 +175,10 @@ pytest tests/test_ws_book.py -v \
   --server=wss://uat-stream.3ona.co/exchange/v1/market
 ```
 ---
-Tips:
-	•	Default instrument is BTCUSD-PERP.
-	•	If start_ts > end_ts (in REST tests), the server may return an empty dataset. This is expected.
-	•	Negative tests are marked with @pytest.mark.negative and can be filtered using:
-    ```
-    pytest -m negative -v
-    ```
+## Tips:
+- Default instrument is BTCUSD-PERP.
+- If start_ts > end_ts (in REST tests), the server may return an empty dataset. This is expected.
+- Negative tests are marked with @pytest.mark.negative and can be filtered using:
+```
+pytest -m negative -v
+```
