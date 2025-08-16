@@ -1,10 +1,13 @@
 # Crypto.com QA Challenges
 
-This repository provides automated test cases for **Crypto.com Exchange APIs**,  
-covering both **REST** and **WebSocket** endpoints.  
+This repository contains automated test cases for Crypto.com Exchange REST and WebSocket APIs,  
+including candlestick (REST) and order book (WebSocket) validation.  
+It is designed for functional, boundary, and negative test scenarios.
 
-The goal is to validate the correctness, stability, and error handling of  
-candlestick data (`public/get-candlestick`) and order book subscriptions (`book` channel).  
+## Documentation Reference
+
+All API behaviors and schema are based on the official documentation:  
+[Crypto.com Exchange API Docs](https://exchange-docs.crypto.com/#introduction)
 
 ---
 
@@ -75,6 +78,16 @@ git clone https://github.com/yourname/crypto_com_qa_challenges.git
 cd crypto_com_qa_challenges
 ```
 
+### Environment Setup (Python 3.10 + venv)
+```
+# Create & activate a virtualenv
+python3 -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+```
+
+### Make the project importable via project.pth
+To allow importing modules from the project root without editing PYTHONPATH, create a .pth file inside your venv’s site-packages that points to the repo root.
+
 ### Install dependencies
 ```
 pip install -r requirements.txt
@@ -85,6 +98,23 @@ pip install pip-review
 pip-review --auto
 pip freeze > requirements.txt
 ```
+
+---
+##  Allure HTML Report
+Allure plugin is already included in requirements.txt,
+and pytest.ini has pre-configured --alluredir=reports/allure_results.
+
+Generate Report
+# Run tests (results auto-saved to reports/allure_results)
+pytest
+
+# Generate & open HTML
+```
+allure generate reports/allure_results -o reports/allure_report --clean
+allure open reports/allure_report
+```
+---
+
 ## Execution
 
 This project uses **pytest** for test execution.  
