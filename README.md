@@ -104,7 +104,7 @@ and pass parameters through **CLI options** or **run.ini**.
 | `--book-freq`    | WebSocket delta frequency in ms                                             | `10`            | `--book-freq=100`                          |
 | `--server`       | Override REST/WS base URL. Use `http(s)://` for REST, `ws(s)://` for WS     | *none*          | `--server=https://uat-api.3ona.co/exchange/v1/`<br>`--server=wss://uat-stream.3ona.co/exchange/v1/market` |
 | `--cafile`       | Path to custom CA bundle (PEM)                                              | `certifi` bundle | `--cafile=/path/to/custom-ca.pem`          |
-| `--insecure`     | Disable TLS verification (⚠️ do not use in prod)                            | `False`         | `--insecure`                               |
+| `--insecure`     | Disable TLS verification (do not use in prod)                            | `False`         | `--insecure`                               |
 
 ---
 
@@ -112,13 +112,13 @@ and pass parameters through **CLI options** or **run.ini**.
 ```
 pytest -v
 ```
+---
 
-### Run REST Tests
+## Run REST Tests
 ```
 pytest tests/test_rest_candlestick.py -v
 ```
 
-Examples:
 ### Use prod (default)
 ```
 pytest tests/test_rest_candlestick.py -v
@@ -134,12 +134,12 @@ pytest tests/test_rest_candlestick.py -v --env=uat
 pytest tests/test_rest_candlestick.py -v --instrument=ETHUSD-PERP
 ```
 
-### Run WebSocket Tests
+---
+
+## Run WebSocket Tests
 ```
 pytest tests/test_ws_book.py -v
 ```
-
-Examples:
 
 ### Subscribe to BTCUSD-PERP book.50 (default)
 ```
@@ -159,3 +159,26 @@ pytest tests/test_ws_book.py -v --book-type=SNAPSHOT
 ```
 pytest tests/test_ws_book.py -v --book-freq=100
 ```
+
+---
+## Override Server Endpoints
+
+### REST
+```
+pytest tests/test_rest_candlestick.py -v \
+  --server=https://uat-api.3ona.co/exchange/v1/
+```
+
+### WebSocket
+```
+pytest tests/test_ws_book.py -v \
+  --server=wss://uat-stream.3ona.co/exchange/v1/market
+```
+---
+Tips:
+	•	Default instrument is BTCUSD-PERP.
+	•	If start_ts > end_ts (in REST tests), the server may return an empty dataset. This is expected.
+	•	Negative tests are marked with @pytest.mark.negative and can be filtered using:
+    ```
+    pytest -m negative -v
+    ```
