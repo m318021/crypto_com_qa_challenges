@@ -102,8 +102,10 @@ pip freeze > requirements.txt
 ---
 ##  Allure HTML Report
 Allure plugin is already included in requirements.txt,
-and pytest.ini has pre-configured 
-**--alluredir=reports/allure_results**.
+and pytest.ini has pre-configured
+'''
+--alluredir=reports/allure_results
+'''
 
 ### Generate Report
 - Run tests (results auto-saved to reports/allure_results)
