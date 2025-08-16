@@ -12,10 +12,7 @@ from resources.functions.candlestick_utils import (
 )
 from helpers.test_data_loader import VALID_CASES, TIME_RANGE_CASES
 
-
-# ======================
-#        正向案例
-# ======================
+# Positive Cases
 @pytest.mark.parametrize("tf_str,count", VALID_CASES)
 def test_valid_cases(rest_api, instrument_name, tf_str, count):
     timeframe = norm_tf(tf_str)
@@ -36,7 +33,7 @@ def test_valid_cases(rest_api, instrument_name, tf_str, count):
         assert_ohlc_ok(c)
 
 
-# 最近一小時窗口（允許對齊誤差一個 timeframe）
+# Recent 1-hour window (allowing 1 timeframe misalignment tolerance)
 @pytest.mark.parametrize("tf_str,count", TIME_RANGE_CASES)
 def test_time_window_recent_hour(rest_api, instrument_name, tf_str, count):
     end_ts = int(time.time() * 1000)
@@ -59,7 +56,7 @@ def test_time_window_recent_hour(rest_api, instrument_name, tf_str, count):
         assert_ohlc_ok(c)
 
 
-# 大 count 邊界（實際上限以服務行為為準：只斷言 <= 要求值）
+# Large count boundary (actual upper limit depends on server behavior: only assert <= requested count)
 def test_large_count_limit(rest_api, instrument_name):
     case = TD["limits"]["large_count"]
     timeframe = norm_tf(case["timeframe"])
@@ -72,13 +69,10 @@ def test_large_count_limit(rest_api, instrument_name):
     data = extract_result(body)["data"]
     assert 0 < len(data) <= case["count"]
 
-
-# ======================
-#        負向案例
-# ======================
+# Negative Cases
 @pytest.mark.negative
 def test_invalid_timeframe(rest_api, instrument_name):
-    # 預期 400，APIClient 會 raise APIError
+    # Expect HTTP 400, APIClient should raise APIError
     case = TD["negatives"]["invalid_timeframe"]
     with pytest.raises(APIError) as e:
         rest_api.get_candlestick(
@@ -88,13 +82,13 @@ def test_invalid_timeframe(rest_api, instrument_name):
                 "count": case["count"],
             }
         )
-    # 訊息可能因環境略異，做關鍵字比對
+    # Message may vary by environment, so check by keyword
     assert "Invalid request" in str(e.value) or "400" in str(e.value)
 
 
 @pytest.mark.negative
 def test_count_zero(rest_api, instrument_name):
-    # 預期 400，APIClient 會 raise APIError
+    # Expect HTTP 400, APIClient should raise APIError
     case = TD["negatives"]["count_zero"]
     timeframe = norm_tf(case["timeframe"])
     with pytest.raises(APIError) as e:
@@ -111,13 +105,13 @@ def test_count_zero(rest_api, instrument_name):
 @pytest.mark.negative
 def test_start_after_end(rest_api, instrument_name):
     """
-    此情境在部分環境會回 200 + code=0 + data=[]
-    因此以「空資料」為通過條件。
+    In some environments, this scenario returns 200 + code=0 + data=[].
+    So the condition "empty data" is considered as pass.
     """
     case = TD["negatives"]["start_after_end"]
     timeframe = norm_tf(case["timeframe"])
     now = int(time.time() * 1000)
-    start_ts, end_ts = now, now - 3600_000  # 故意顛倒
+    start_ts, end_ts = now, now - 3600_000  # intentionally inverted
 
     resp = rest_api.get_candlestick(
         {
@@ -128,9 +122,9 @@ def test_start_after_end(rest_api, instrument_name):
             "end_ts": end_ts,
         }
     )
-    # 不強制檢查 http code；只要 body 正確且 data 為空即可
+    # Do not force http code check; just ensure body is valid and data is empty
     body = resp.json()
-    # 有些環境仍會回 0
+    # Some environments still return code=0
     assert "result" in body, f"unexpected body: {body}"
     result = extract_result(body)
     assert "data" in result
@@ -140,8 +134,9 @@ def test_start_after_end(rest_api, instrument_name):
 @pytest.mark.negative
 def test_invalid_instrument(rest_api):
     """
-    有的環境會回 400（APIError），有的回 200 + code != 0 或 data=[]。
-    兩者皆接受。
+    Some environments return 400 (APIError),
+    others return 200 + code != 0 or data=[].
+    Both are acceptable.
     """
     bad = TD["negatives"]["invalid_instrument_literal"]
     try:
@@ -153,21 +148,21 @@ def test_invalid_instrument(rest_api):
             }
         )
     except APIError as e:
-        # 400 情境：視為通過
+        # 400 case: considered pass
         assert "400" in str(e) or "Invalid" in str(e)
         return
 
-    # 沒丟例外 -> 驗證回傳內文
+    # If no exception raised -> validate response body
     body = resp.json()
     if body.get("code", 1) != 0:
-        assert body["code"] != 0  # 非 0 視為錯誤（通過）
+        assert body["code"] != 0  # non-zero means error (pass)
     else:
-        # code=0 但 data 可能為空（也接受）
+        # code=0 but data might be empty (also acceptable)
         result = extract_result(body)
         assert result.get("data", []) == []
 
-# tests/test_rest_candlestick.py (新增在負向案例區)
 
+# Additional negative case (direct invalid instrument test)
 @pytest.mark.negative
 def test_invalid_instrument_direct(rest_api, instrument_name="ETHUSD-PERP111"):
     """
@@ -176,11 +171,13 @@ def test_invalid_instrument_direct(rest_api, instrument_name="ETHUSD-PERP111"):
     """
     bad_instrument = "ETHUSD-PERP111"
     try:
-        resp = rest_api.get_candlestick({
-            "instrument_name": bad_instrument,
-            "timeframe": "M5",
-            "count": 25,
-        })
+        resp = rest_api.get_candlestick(
+            {
+                "instrument_name": bad_instrument,
+                "timeframe": "M5",
+                "count": 25,
+            }
+        )
     except APIError as e:
         # Expected: server returns HTTP 400
         assert "400" in str(e) or "Invalid" in str(e)
