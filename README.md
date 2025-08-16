@@ -69,14 +69,13 @@ crypto_com_qa_challenges/
 
 ## Installation
 
-
-# Clone repository
+### Clone repository
 ```
 git clone https://github.com/yourname/crypto_com_qa_challenges.git
 cd crypto_com_qa_challenges
 ```
 
-# Install dependencies
+### Install dependencies
 ```
 pip install -r requirements.txt
 ```
@@ -120,34 +119,43 @@ pytest tests/test_rest_candlestick.py -v
 ```
 
 Examples:
-# Use prod (default)
+### Use prod (default)
 ```
 pytest tests/test_rest_candlestick.py -v
 ```
 
-# Use UAT environment
+### Use UAT environment
 ```
 pytest tests/test_rest_candlestick.py -v --env=uat
 ```
 
-# Change instrument
+### Change instrument
 ```
 pytest tests/test_rest_candlestick.py -v --instrument=ETHUSD-PERP
 ```
 
 ### Run WebSocket Tests
+```
 pytest tests/test_ws_book.py -v
+```
 
 Examples:
-# Subscribe to BTCUSD-PERP book.50 (default)
+
+### Subscribe to BTCUSD-PERP book.50 (default)
+```
 pytest tests/test_ws_book.py -v
+```
 
-# UAT environment, ETHUSD-PERP, depth=10
+### UAT environment, ETHUSD-PERP, depth=10
+```
 pytest tests/test_ws_book.py -v --env=uat --instrument=ETHUSD-PERP --depth=10
+```
 
-# Force SNAPSHOT only
+### Force SNAPSHOT only
+```
 pytest tests/test_ws_book.py -v --book-type=SNAPSHOT
-
-# Set book update frequency to 100ms
+```
+### Set book update frequency to 100ms
+```
 pytest tests/test_ws_book.py -v --book-freq=100
 ```
