@@ -1,6 +1,6 @@
 import logging
 from time import perf_counter
-from typing import Any, Dict, Mapping, MutableMapping, Optional, Tuple, Union
+from typing import Any, Mapping, MutableMapping, Optional, Tuple, Union
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class APIError(requests.HTTPError):
     """Raised for unexpected HTTP responses from the API."""
+
     pass
 
 
@@ -59,7 +60,6 @@ class APIClient:
             self.session.proxies.update(proxies)
         if auth:
             self.session.auth = auth
-
 
     def get(self, path: str, **kwargs):
         return self.request("GET", path, **kwargs)
@@ -132,10 +132,7 @@ class APIClient:
 
         if check_status and resp.status_code != expected:
             # Attach response text for easier debugging
-            msg = (
-                f"Unexpected status {resp.status_code} (expected {expected}) "
-                f"for {method.upper()} {resp.request.path_url}: {resp.text[:1000]}"
-            )
+            msg = f"Unexpected status {resp.status_code} (expected {expected}) " f"for {method.upper()} {resp.request.path_url}: {resp.text[:1000]}"
             err = APIError(msg, response=resp)
             logger.warning(msg)
             raise err

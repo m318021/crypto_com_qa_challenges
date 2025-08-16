@@ -1,0 +1,25 @@
+{
+  "valid_cases": [
+    ["5m", 25],
+    ["1h", 5],
+    ["1D", 1]
+  ],
+  "time_range_cases": [
+    ["5m", 20],
+    ["1h", 10]
+  ],
+  "negatives": {
+    "invalid_timeframe": { "timeframe": "999x", "count": 5 },
+    "count_zero": { "timeframe": "5m", "count": 0 },
+    "start_after_end": { "timeframe": "5m", "count": 5 },
+    "invalid_instrument_literal": "NOPE_NOPE"
+  },
+  "limits": {
+    "large_count": { "timeframe": "5m", "count": 200 }
+  },
+  "aliases": {
+    "1m": "M1", "5m": "M5", "15m": "M15", "30m": "M30",
+    "1h": "H1", "2h": "H2", "4h": "H4", "12h": "H12",
+    "1D": "1D", "7D": "7D", "14D": "14D", "1M": "1M"
+  }
+}

@@ -9,11 +9,13 @@ RUN_INI_PATH = PROJECT_ROOT / "run.ini"
 # ----- Config Files -----
 CONFIG_FILES_DIR = PROJECT_ROOT / "config_files"
 
-# YAML
-YAML_DIR = CONFIG_FILES_DIR / "yaml"
+# JSON
+JSON_DIR = CONFIG_FILES_DIR / "json"
+TEST_DATA_REST_CANDLESTICK_PATH = JSON_DIR / "test_data_rest_candlestick.json"
 
 # INI
 INI_DIR = CONFIG_FILES_DIR / "ini"
+RUN_INI_PATH = INI_DIR / "run.ini"
 
 # ----- Generated Files -----
 GENERATED_FILES_DIR = PROJECT_ROOT / "generated_files"
