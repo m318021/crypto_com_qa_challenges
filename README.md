@@ -73,6 +73,8 @@ crypto_com_qa_challenges/
 ## Installation
 
 ### Environment Setup (Python 3.10 + venv)
+This project requires Python 3.10 or higher.
+It is recommended to create a virtual environment (venv) to isolate dependencies.
 ```
 # 1. Clone repository
 git clone https://github.com/m318021/crypto_com_qa_challenges.git
